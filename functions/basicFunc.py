@@ -11,6 +11,16 @@ def requestLastUpdate(allUpdate):
   indexlastUpdate = len(lastUpdate) -1 
   return lastUpdate[indexlastUpdate]
 
+def requestLastLastUpdate(allUpdate):
+  lastLastUpdate = allUpdate['result']
+  indexLastLastUpdate = len(lastLastUpdate) -2 
+  return lastLastUpdate[indexLastLastUpdate]
+
+def requestLastUpdateId(requestLastUpdate):
+  lastUpdate = requestLastUpdate['update_id']
+  return lastUpdate
+  
+
 def getChatId(requestLastUpdate):
   chatId=requestLastUpdate['message']['from']['id'] # result[]
   return chatId
@@ -24,7 +34,7 @@ def getText(requestLastUpdate):
   text = requestLastUpdate['message']['text']
   return text
 def getTime(requestLastUpdate):
-  time=requestLastUpdate['date']
+  time=requestLastUpdate['message']['date']
   return time
 def sendMess(chatId, text):
   params={'chat_id':chatId,'text':text}

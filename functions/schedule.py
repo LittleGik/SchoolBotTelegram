@@ -1,3 +1,4 @@
+import datetime
 import time
 from basicFunc import *
 def getNameDay(numDay): # Выводим название дня недели. На вход номер дня недели, 0 - Воскресенье
@@ -51,16 +52,19 @@ def getTextSchedule(file): #Считываем расписание с файл�
 
 def sendSchedule(chatId,numday): # отправка расписание
     numday = int(numday)
-    arrayDaySchedule = getTextSchedule('Schedule')
+    arrayDaySchedule = getTextSchedule('fileText/Schedule')
     response = sendMess(chatId,arrayDaySchedule[numday])
     return response
-    
 
-def findSchedule(chatId): # Определяет и отправляет расписание
+
+def getSchedule(chatId,lastTime): # Определяет и отправляет расписание
     id = chatId
-    daysend = time.strftime('%w', time.localtime())
-    hoursend = time.strftime('%H', time.localtime())
-    minsend = time.strftime('%M', time.localtime())
+    min = str(time.gmtime(1553705087))
+    minut = min.find('tm_min=')
+    hour = min.find('tm_hour=')
+    daysend = int(time.strftime('%w', time.localtime()))
+    hoursend = int(min[hour+8:hour+10])
+    minsend = int(min[minut+7:minut+9])
     numDay = 0
     if(int(hoursend) < 15):
         numDay = daysend
