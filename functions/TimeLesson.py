@@ -3,67 +3,102 @@ import time
 from basicFunc import *
 
 def sendTimeLesson(chatId, lastTime):
-    
-    return sendMess(chatId,TimeLesson(lastTime))
+    arrayTimeIndex = TimeLesson(lastTime)
+    time = int(arrayTimeIndex[0])
+    index = int(arrayTimeIndex[1])
+    BegText = 'Хлопчик, быстрее тикай на урок. До начала урока осталось: '
+    EndText = 'Держись, ещё немного и тебя отпустят. До конца урока осталось: '
+    if(arrayTimeIndex[1] == -1):
+        return sendMess(chatId, 'Вася, уже урок')
+    elif arrayTimeIndex[0] == -2:
+        return sendMess(chatId,'Ещё не время учиться')
+    else:
+        if arrayTimeIndex[0] % 2 == 0:
+            text = BegText + arrayTimeIndex[0] + 'минут(-ы)'
+            return sendMess(chatId,text)
+        else: 
+            text = EndText + arrayTimeIndex[0] + 'минут(-ы)'
+            return sendMess(chatId,text)
 
-    
-
-def TimeLesson(lastTime):
-    
-    daysend = int(time.strftime('%w', time.localtime()))
-    min = str(time.gmtime(1553705087))
-    minut = min.find('tm_min=')
-    hour = min.find('tm_hour=')
-    daysend = int(time.strftime('%w', time.localtime()))
-    hoursend = int(min[hour+8:hour+10])
-    minsend = int(min[minut+7:minut+9])
-    
-    arraySignal = getTextTimeLesson('fileText/TimeLesson') # Массив в формате [номерзвонка][0 - час\ 1 -минута]
-    lastTimeSignal = arraySignal[len(arraySignal)][0] # достаём час последнего звонка
-    firstTimeSignal = arraySignal[len(arraySignal)][0] # достаём минуту последнего звонка 
-    
-    if(daysend != 0 and hoursend <= lastTimeSignal  and hoursend >= firstTimeSignal):
-        for i in range(1,len(arraySignal)):
-            if(hoursend == arraySignal[i][0]):
-                if(minsend <= arraySignal[i][1]):
-                    BegSignal = arraySignal[i][1] - minsend
-                    index = i
-                    break;
-            else:
-                if(minsend > arraySignal[i][1]):
-                    BegSignal = 60 - minsend
-                    BegSignal += arraySignal[i+1][1]
-                    index = i
-                    break;
-        if(index % 2 == 0):
-            text = 'До начала урока осталось:  ' + BegSignal +' минут(-ы)'
-        else: text = 'Держись, ещё немного и звонок: ' +BegSignal + ' минут(-ы).'
-        return text        
-                        
-    else: return 0
-
-
-
-def getTextTimeLesson(file): #Возвращает массив, где под четным индексом время перемены
-    
+def getTextTimeLesson(file): #Возвращает массив, где под четным индексом время звонки [номерзвонка][час][минуты]
     text = open(file +'.txt', 'r', encoding='utf-8')
     text = text.read()
     
     countSignal = text.count('*')
-    arraySignalHourMinute = [0]*countSignal+1
-    
-    for i in range(1,countSignal+1):
+    arraySignalHourMinute = []
+
+    for i in range(0,countSignal):
+        arraySignalHourMinute.append([])
+
+    for i in range(0,countSignal):
+        indexSlice = text.find(':')
         for j in range(0,2):
-            indexSlice=text.find(':')
-            if(j == 0):
-                hour = text[2:indexslice]
-                arraySignalHourMinute[i].append()
+            if j == 0 :
+                hour = text[0:indexSlice]
+                arraySignalHourMinute[i].append([hour])
             else: 
-                minute = text[indexSlice+1:indexSlice+2]
+                minute = text[indexSlice + 1:indexSlice+2]
+                arraySignalHourMinute[i].append([minute])
                 text = text[6:]
     return arraySignalHourMinute
 
+def TimeLessonFunction(lastTime, h):
+
+    min = str(time.gmtime(lastTime))
+    minut = min.find('tm_min=')
+    hour = min.find('tm_hour=')
+    daysend = int(time.strftime('%w', time.localtime()))
     
+    #Костыль для часов
+    hoursend = min[hour+8:hour+10]
+    if hoursend.count(',') != 0:
+        hoursend = int(hoursend[0:hoursend.find(',')]) + h
+    else: hoursend = int(hoursend) + h
+    
+    #Костыль для мину
+    minsend = min[minut+7:minut+9]
+    if minsend.count(',') != 0:
+        minsend = int(minsend[0:minsend.find(',')])
+    else: minsend  = int(minsend)
+    arrayHourMinut = [0]*2
+    arrayHourMinut[0] = hoursend
+    arrayHourMinut[1] = minsend
+    return arrayHourMinut
+
+
+def TimeLesson(lastTime):
+    
+    arrayTime = TimeLessonFunction(lastTime, 4) # Время пользователя
+    hour = arrayTime[0]
+    minute = arrayTime[1]
+    
+    arraySignalHourMinute = getTextTimeLesson('fileText/TimeLesson') # Расписание звонков
+    
+    for i in range(0,len(arraySignalHourMinute)):
+
+        if(hour == arraySignalHourMinute[i][0] ):
+            
+            if(minute < arraySignalHourMinute):
+                timeSignal = arraySignalHourMinute[i][1] - minute
+                indexSignal = i
+                break;
+            
+            elif(minute > arraySignalHourMinute[i][0]):
+                timeSignal = 60 - minute + arraySignalHourMinute[i][1]
+                indexSignal = i
+            
+            elif(minute == arraySignalHourMinute[i][0]):
+                indexSignal = -1
+                timeSignal = -1 
+            arrayTimeIndex = []*2
+            arrayTimeIndex[0] = timeSignal
+            arrayTimeIndex[1] = indexSignal
+
+            return arrayTimeIndex
+        else:
+            arrayTimeIndex = [-2]*2
+            return arrayTimeIndex
+                
 
 
     

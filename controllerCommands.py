@@ -28,6 +28,6 @@ def findCommand(lastUpdate):
     elif(command == '/help'):
         return sendHelp(chatId)
     elif(command == '/timelesson'):
-        return sendTimeLesson(chatId, lastTime)
+        return sendTimeLesson(chatId,lastTime)
     else: return sendMess(chatId,'Неверная команда. Воспользуйтесь командой /help')
     

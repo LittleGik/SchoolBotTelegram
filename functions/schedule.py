@@ -59,7 +59,7 @@ def sendSchedule(chatId,numday): # отправка расписание
 
 def getSchedule(chatId,lastTime): # Определяет и отправляет расписание
     id = chatId
-    min = str(time.gmtime(1553705087))
+    min = str(time.gmtime(lastTime))
     minut = min.find('tm_min=')
     hour = min.find('tm_hour=')
     daysend = int(time.strftime('%w', time.localtime()))
