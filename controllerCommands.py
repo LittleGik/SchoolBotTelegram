@@ -3,33 +3,28 @@
 import sys
 sys.path.append('c:\\Users\\LittleGik\\Documents\\GitHub\\SchoolBotTelegram\\functions\\')
 from basicFunc import *
-from schedule import *
-from TimeLesson import *
-from help import *
+from schedule import getSchedule
+from TimeLesson import sendTimeLesson
+from help import sendHelp
+from start import sendStart
 
 
 
-def startCommand(lastUpdate,lastLastUpdate):
+def startCommand(lastUpdate):
+    findCommand(lastUpdate)
 
-    lastTime = getTime(lastUpdate)
-    lastLastTime = getTime(lastLastUpdate)
-
-    lastChatId = getChatId(lastUpdate)
-    lastLastChatId = getChatId(lastLastUpdate)
-
-    while lastTime != lastLastTime:
-        findCommand(lastUpdate,lastTime)
-        lastLastTime = lastTime
     
 
 
-def findCommand(lastUpdate,lastDate):
-    lastTime = int(lastDate)
+def findCommand(lastUpdate):
+    lastTime = int(getTime(lastUpdate))
     command = getText(lastUpdate)
     chatId = getChatId(lastUpdate)
 
     if(command == '/schedule'):
         return getSchedule(chatId,lastTime)
+    elif(command == '/start'):
+        return sendStart(chatId)
     elif(command == '/help'):
         return sendHelp(chatId)
     elif(command == '/timelesson'):

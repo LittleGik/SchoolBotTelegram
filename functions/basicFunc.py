@@ -3,22 +3,19 @@ import requests
 url='https://api.telegram.org/bot853307556:AAEP98YuAL1nx2a0Gz3hcVfNuFxrFxLC1Hk/'
 
 def requestAllUpdate(urlbot):
-  response = requests.get(urlbot +'getupdates') # делаем запрос на сайт
+  params = {'timeout': 100, 'offset': None}
+  response = requests.get(urlbot +'getupdates', data = params ) # делаем запрос на сайт
   return response.json()
 
 def requestLastUpdate(allUpdate):
   lastUpdate = allUpdate['result']
-  indexlastUpdate = len(lastUpdate) -1 
+  indexlastUpdate = len(lastUpdate) - 1 
   return lastUpdate[indexlastUpdate]
 
-def requestLastLastUpdate(allUpdate):
-  lastLastUpdate = allUpdate['result']
-  indexLastLastUpdate = len(lastLastUpdate) -2 
-  return lastLastUpdate[indexLastLastUpdate]
 
 def requestLastUpdateId(requestLastUpdate):
   lastUpdate = requestLastUpdate['update_id']
-  return lastUpdate
+  return int(lastUpdate)
   
 
 def getChatId(requestLastUpdate):
