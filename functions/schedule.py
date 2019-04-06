@@ -58,13 +58,28 @@ def sendSchedule(chatId,numday): # отправка расписание
 
 
 def getSchedule(chatId,lastTime): # Определяет и отправляет расписание
+    h=3
     id = chatId
     min = str(time.gmtime(lastTime))
     minut = min.find('tm_min=')
     hour = min.find('tm_hour=')
-    daysend = int(time.strftime('%w', time.localtime()))
+    '''
     hoursend = int(min[hour+8:hour+10])
     minsend = int(min[minut+7:minut+9])
+    '''
+    daysend = int(time.strftime('%w', time.localtime()))
+    #Костыль для часов
+    hoursend = min[hour+8:hour+10]
+    if hoursend.count(',') != 0:
+        hoursend = int(hoursend[0:hoursend.find(',')]) + h
+    else: hoursend = int(hoursend) + h
+    
+    #Костыль для мину
+    minsend = min[minut+7:minut+9]
+    if minsend.count(',') != 0:
+        minsend = int(minsend[0:minsend.find(',')])
+    else: minsend  = int(minsend)
+    
     numDay = 0
     if(int(hoursend) < 15):
         numDay = daysend

@@ -55,7 +55,7 @@ def TimeLessonFunction(lastTime, h):
         hoursend = int(hoursend[0:hoursend.find(',')]) + h
     else: hoursend = int(hoursend) + h
     
-    #Костыль для мину
+    #Костыль для минут
     minsend = min[minut+7:minut+9]
     if minsend.count(',') != 0:
         minsend = int(minsend[0:minsend.find(',')])
@@ -63,6 +63,7 @@ def TimeLessonFunction(lastTime, h):
     arrayHourMinut = [0]*2
     arrayHourMinut[0] = hoursend
     arrayHourMinut[1] = minsend
+    
     return arrayHourMinut
 
 
